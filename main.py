@@ -1,4 +1,4 @@
-from fastapi import FastAPI, File, UploadFile
+from fastapi import FastAPI, File, UploadFile, Form
 from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
 import numpy as np
@@ -10,7 +10,7 @@ app = FastAPI()
 
 origins = [
     "http://localhost",
-     "http://127.0.0.1:5500",
+    "http://127.0.0.1:5500",
     "/Users/admin/Desktop/AI:ML/Potato_Disease_CNN/Potato-Disease-Classifier/Potato_Disease_CNN/index.html",
 ]
 
@@ -22,23 +22,41 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-MODEL = tf.keras.models.load_model("/Users/admin/Desktop/AI:ML/Potato_Disease_CNN/cauliflower__model_v1.h5")  # Replace with path of the model needed
+# Define model paths and class names for each plant type
+MODELS = {
+    "Potato": "/Users/admin/Desktop/AI:ML/Potato_Disease_CNN/potato_model_v1.h5 copy",
+    "Mango": "/Users/admin/Desktop/AI:ML/Potato_Disease_CNN/mango_model_v1.h5",
+    "Rice": "/Users/admin/Desktop/AI:ML/Potato_Disease_CNN/rice_model_v1.h5",
+    "Tea": "/Users/admin/Desktop/AI:ML/Potato_Disease_CNN/tea_model_v1.h5",
+    "Cauliflower": '/Users/admin/Desktop/AI:ML/Potato_Disease_CNN/cauliflower__model_v1.h5',
+    "Wheat": '/Users/admin/Desktop/AI:ML/Potato_Disease_CNN/wheat_model_v1.h5',
+    "Brinjal": '/Users/admin/Desktop/AI:ML/Potato_Disease_CNN/brinjal_model_v1.h5',
+    "PepperBell": '/Users/admin/Desktop/AI:ML/Potato_Disease_CNN/pepperbell_model_v1.h5',
+    "Tomato": '/Users/admin/Desktop/AI:ML/Potato_Disease_CNN/tomato_model_v1.h5',
+    "Apple": '/Users/admin/Desktop/AI:ML/Potato_Disease_CNN/apple_model_v1.h5',
+    "Corn": '/Users/admin/Desktop/AI:ML/Potato_Disease_CNN/corn_model_v1.h5',
+    "Grape": '/Users/admin/Desktop/AI:ML/Potato_Disease_CNN/grape_model_v1.h5',
+    "Cherry": '/Users/admin/Desktop/AI:ML/Potato_Disease_CNN/cherry_model_v1.h5',
+    "Peach": '/Users/admin/Desktop/AI:ML/Potato_Disease_CNN/peach_model_v1.h5'
+    
+}
 
-# CLASS_NAMES = ["Early Blight", "Late Blight", "Healthy"]   # Potato model
-# CLASS_NAMES = ['Anthracnose', 'Bacterial Canker', 'Cutting Weevil', 'Die Back', 'Gall Midge', 'Healthy', 'ODD(Cifar10_Subset)', 'Powdery Mildew', 'Sooty Mould']  # Mango model
-# CLASS_NAMES = ['ODD(Cifar10_Subset)', 'bacterial_leaf_blight', 'brown_spot', 'healthy', 'leaf_blast', 'leaf_scald', 'narrow_brown_spot']  # Rice Model
-# CLASS_NAMES = ['Anthracnose', 'ODD(Cifar10_Subset)', 'bird eye spot', 'brown blight', 'healthy']   # Tea Model
-# CLASS_NAMES = ['Bacterial spot rot', 'Black Rot', 'Downy Mildew', 'Healthy', 'ODD(Cifar10_Subset)']  # Cauliflower Model
-# CLASS_NAMES = ['Healthy', 'ODD(Cifar10_Subset)', 'septoria', 'stripe_rust']    # Wheat Model
-# CLASS_NAMES = ['Diseased Brinjal Leaf', 'Fresh Brinjal Leaf', 'ODD(Cifar10_Subset)']   # Brinjal Mode;
-# CLASS_NAMES = ['ODD(Cifar10_Subset)', 'Pepper__bell___Bacterial_spot', 'Pepper__bell___healthy']   # PepperBell Model
-# CLASS_NAMES = ['ODD(Cifar10_Subset)', 'Tomato_Bacterial_spot', 'Tomato_Early_blight', 'Tomato_Late_blight', 'Tomato_Leaf_Mold', 'Tomato_Septoria_leaf_spot', 'Tomato_Spider_mites_Two_spotted_spider_mite', 'Tomato__Target_Spot', 'Tomato__Tomato_YellowLeaf__Curl_Virus', 'Tomato__Tomato_mosaic_virus', 'Tomato_healthy']   # Tomato Model
-# CLASS_NAMES = ['Apple___Apple_scab', 'Apple___Black_rot', 'Apple___Cedar_apple_rust', 'Apple___healthy', 'ODD(Cifar10_Subset)']    # Apple Model
-# CLASS_NAMES = ['Corn_(maize)___Cercospora_leaf_spot Gray_leaf_spot', 'Corn_(maize)___Common_rust_', 'Corn_(maize)___Northern_Leaf_Blight', 'Corn_(maize)___healthy', 'ODD(Cifar10_Subset)']   # Corn Model
-# CLASS_NAMES = ['Grape___Black_rot', 'Grape___Esca_(Black_Measles)', 'Grape___Leaf_blight_(Isariopsis_Leaf_Spot)', 'Grape___healthy', 'ODD(Cifar10_Subset)']  # Grape Model
-# CLASS_NAMES = ['Cherry_(including_sour)___Powdery_mildew', 'Cherry_(including_sour)___healthy', 'ODD(Cifar10_Subset)']   # Cherry Model
-# CLASS_NAMES = ['ODD(Cifar10_Subset)', 'Peach___Bacterial_spot', 'Peach___healthy']  # Peach Model
-
+CLASS_NAMES = {
+    "Potato": ["Early Blight", "Late Blight", "Healthy"],
+    "Mango": ['Anthracnose', 'Bacterial Canker', 'Cutting Weevil', 'Die Back', 'Gall Midge', 'Healthy', 'ODD(Cifar10_Subset)', 'Powdery Mildew', 'Sooty Mould'],
+    "Rice": ['ODD(Cifar10_Subset)', 'bacterial_leaf_blight', 'brown_spot', 'healthy', 'leaf_blast', 'leaf_scald', 'narrow_brown_spot'],
+    "Tea": ['Anthracnose', 'ODD(Cifar10_Subset)', 'bird eye spot', 'brown blight', 'healthy'],
+    "Cauliflower": ['Bacterial spot rot', 'Black Rot', 'Downy Mildew', 'Healthy', 'ODD(Cifar10_Subset)'],
+    "Wheat": ['Healthy', 'ODD(Cifar10_Subset)', 'septoria', 'stripe_rust'],
+    "Brinjal": ['Diseased Brinjal Leaf', 'Fresh Brinjal Leaf', 'ODD(Cifar10_Subset)'],
+    "PepperBell": ['ODD(Cifar10_Subset)', 'Pepper__bell___Bacterial_spot', 'Pepper__bell___healthy'],
+    "Tomato": ['ODD(Cifar10_Subset)', 'Tomato_Bacterial_spot', 'Tomato_Early_blight', 'Tomato_Late_blight', 'Tomato_Leaf_Mold', 'Tomato_Septoria_leaf_spot', 'Tomato_Spider_mites_Two_spotted_spider_mite', 'Tomato__Target_Spot', 'Tomato__Tomato_YellowLeaf__Curl_Virus', 'Tomato__Tomato_mosaic_virus', 'Tomato_healthy'],
+    "Apple": ['Apple___Apple_scab', 'Apple___Black_rot', 'Apple___Cedar_apple_rust', 'Apple___healthy', 'ODD(Cifar10_Subset)'],
+    "Corn": ['Corn_(maize)___Cercospora_leaf_spot Gray_leaf_spot', 'Corn_(maize)___Common_rust_', 'Corn_(maize)___Northern_Leaf_Blight', 'Corn_(maize)___healthy', 'ODD(Cifar10_Subset)'],
+    "Grape": ['Grape___Black_rot', 'Grape___Esca_(Black_Measles)', 'Grape___Leaf_blight_(Isariopsis_Leaf_Spot)', 'Grape___healthy', 'ODD(Cifar10_Subset)'],
+    "Cherry": ['Cherry_(including_sour)___Powdery_mildew', 'Cherry_(including_sour)___healthy', 'ODD(Cifar10_Subset)'],
+    "Peach": ['ODD(Cifar10_Subset)', 'Peach___Bacterial_spot', 'Peach___healthy']
+}
 
 @app.get("/ping")
 async def ping():
@@ -49,7 +67,6 @@ def read_file_as_image(data) -> np.ndarray:
     return image
 
 def format_prediction(predicted_class, confidence):
-    # Check if confidence is less than 60%
     if confidence < 60:
         confidence_message = f"{confidence}% - Confidence very low"
     else:
@@ -61,17 +78,24 @@ def format_prediction(predicted_class, confidence):
     }
 
 @app.post("/predict")
-async def predict(file: UploadFile = File(...)):
+async def predict(file: UploadFile = File(...), plant_type: str = Form(...)):
+    if plant_type not in MODELS:
+        return {"error": "Invalid plant type selected."}
+
+    # Load the correct model and class names based on plant type
+    model_path = MODELS[plant_type]
+    class_names = CLASS_NAMES[plant_type]
+
+    model = tf.keras.models.load_model(model_path)  # Load the selected plant model
+    
     image = read_file_as_image(await file.read())
     img_batch = np.expand_dims(image, 0)
     
-    predictions = MODEL.predict(img_batch)
-    predicted_class = CLASS_NAMES[np.argmax(predictions[0])]
+    predictions = model.predict(img_batch)
+    predicted_class = class_names[np.argmax(predictions[0])]
     confidence = round(np.max(predictions[0]) * 100, 2)
 
-    # Call the format_prediction function and return the result
     result = format_prediction(predicted_class, confidence)
-    
     return result
 
 if __name__ == "__main__":
