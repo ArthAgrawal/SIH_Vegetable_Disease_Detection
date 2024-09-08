@@ -25,4 +25,4 @@ Finally, the accuracies of the various plants are listed below:
 
 Along with the colab notebooks, the model weights are also uploaded as a .h5 file for each plant, which, when downloaded to local machine, can be used to predict the disease for that specific plant.
 
-Finally, the model is sent to main.py which uses FastAPI and the model is deployed in a website
+Finally, the model is sent to main.py which uses FastAPI and the model is deployed in a website. There is a dropdown to select which plant model we will be needing, and that particular model is called using the API.
