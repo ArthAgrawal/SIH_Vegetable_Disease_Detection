@@ -1,7 +1,10 @@
 # SIH_Vegetable_Disease_Detection
 Our project for the Smart India Hackathon 2024 on classifying and treating diseases in vegetables to help farmers.
+
 14 different plants were used for this project. The datasets for the various plants were taken from Kaggle. Each plant has a specific set of diseases which our model can predict. Some of the plants have a binary classification of healthy or diseased while some have many different classes, healthy + set of diseases.
+
 The datasets were downloaded to drive, imported, resized and augmented. Also, for recognizing OOD(Out Of Distribution) images, the CIFAR-10 dataset was used. Using this, if any image is uplaoded which isn't of any category of that given plant, our model classifies it as an OOD class.
+
 Datasets were saved as a tensorflow dataset to make augmentation easier. Early Stoppage was used to make the training more efficient.
 Finally, the accuracies of the various plants are listed below:
 
