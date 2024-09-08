@@ -24,3 +24,5 @@ Finally, the accuracies of the various plants are listed below:
             14) Wheat: 96.30%  (4 classes)
 
 Along with the colab notebooks, the model weights are also uploaded as a .h5 file for each plant, which, when downloaded to local machine, can be used to predict the disease for that specific plant.
+
+Finally, the model is sent to main.py which uses FastAPI and the model is deployed in a website
