@@ -28,7 +28,17 @@ MODEL = tf.keras.models.load_model("/Users/admin/Desktop/AI:ML/Potato_Disease_CN
 # CLASS_NAMES = ['Anthracnose', 'Bacterial Canker', 'Cutting Weevil', 'Die Back', 'Gall Midge', 'Healthy', 'ODD(Cifar10_Subset)', 'Powdery Mildew', 'Sooty Mould']  # Mango model
 # CLASS_NAMES = ['ODD(Cifar10_Subset)', 'bacterial_leaf_blight', 'brown_spot', 'healthy', 'leaf_blast', 'leaf_scald', 'narrow_brown_spot']  # Rice Model
 # CLASS_NAMES = ['Anthracnose', 'ODD(Cifar10_Subset)', 'bird eye spot', 'brown blight', 'healthy']   # Tea Model
-CLASS_NAMES = ['Bacterial spot rot', 'Black Rot', 'Downy Mildew', 'Healthy', 'ODD(Cifar10_Subset)']  # Cauliflower Model
+# CLASS_NAMES = ['Bacterial spot rot', 'Black Rot', 'Downy Mildew', 'Healthy', 'ODD(Cifar10_Subset)']  # Cauliflower Model
+# CLASS_NAMES = ['Healthy', 'ODD(Cifar10_Subset)', 'septoria', 'stripe_rust']    # Wheat Model
+# CLASS_NAMES = ['Diseased Brinjal Leaf', 'Fresh Brinjal Leaf', 'ODD(Cifar10_Subset)']   # Brinjal Mode;
+# CLASS_NAMES = ['ODD(Cifar10_Subset)', 'Pepper__bell___Bacterial_spot', 'Pepper__bell___healthy']   # PepperBell Model
+# CLASS_NAMES = ['ODD(Cifar10_Subset)', 'Tomato_Bacterial_spot', 'Tomato_Early_blight', 'Tomato_Late_blight', 'Tomato_Leaf_Mold', 'Tomato_Septoria_leaf_spot', 'Tomato_Spider_mites_Two_spotted_spider_mite', 'Tomato__Target_Spot', 'Tomato__Tomato_YellowLeaf__Curl_Virus', 'Tomato__Tomato_mosaic_virus', 'Tomato_healthy']   # Tomato Model
+# CLASS_NAMES = ['Apple___Apple_scab', 'Apple___Black_rot', 'Apple___Cedar_apple_rust', 'Apple___healthy', 'ODD(Cifar10_Subset)']    # Apple Model
+# CLASS_NAMES = ['Corn_(maize)___Cercospora_leaf_spot Gray_leaf_spot', 'Corn_(maize)___Common_rust_', 'Corn_(maize)___Northern_Leaf_Blight', 'Corn_(maize)___healthy', 'ODD(Cifar10_Subset)']   # Corn Model
+# CLASS_NAMES = ['Grape___Black_rot', 'Grape___Esca_(Black_Measles)', 'Grape___Leaf_blight_(Isariopsis_Leaf_Spot)', 'Grape___healthy', 'ODD(Cifar10_Subset)']  # Grape Model
+# CLASS_NAMES = ['Cherry_(including_sour)___Powdery_mildew', 'Cherry_(including_sour)___healthy', 'ODD(Cifar10_Subset)']   # Cherry Model
+# CLASS_NAMES = ['ODD(Cifar10_Subset)', 'Peach___Bacterial_spot', 'Peach___healthy']  # Peach Model
+
 
 @app.get("/ping")
 async def ping():
