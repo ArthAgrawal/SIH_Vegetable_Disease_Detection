@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="index.css">
+    <title>Plant Disease Classifier</title>
+</head>
+<body>
+    <div id="heading">
+        <h1>Plant Disease Classifier</h1>
+    </div>
+
+    <div class="card">
+        <div class="content">
+            <div class="back">
+                <div class="back-content">
+                    <lord-icon
+                        src="https://cdn.lordicon.com/jwixqogb.json"
+                        trigger="hover"
+                        stroke="light"
+                        colors="primary:#e4e4e4,secondary:#e4e4e4"
+                        style="width:250px;height:250px">
+                    </lord-icon>
+                    <strong style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif ;">Check Now</strong>
+                </div>
+            </div>
+            <div class="front">
+                <div class="img">
+                    <div class="circle"></div>
+                    <div class="circle" id="right"></div>
+                    <div class="circle" id="bottom"></div>
+                </div>
+
+                <div class="front-content">
+                    <div class="description">
+                        <div class="title">
+                            <label for="plantType">Select Plant Type:</label>
+                            <select id="plantType">
+                                <option value="Potato">Potato</option>
+                                <option value="Mango">Mango</option>
+                                <option value="Rice">Rice</option>
+                                <option value="Tea">Tea</option>
+                                <option value="Cauliflower">Cauliflower</option>
+                                <option value="Wheat">Wheat</option>
+                                <option value="Brinjal">Brinjal</option>
+                                <option value="PepperBell">PepperBell</option>
+                                <option value="Tomato">Tomato</option>
+                                <option value="Apple">Apple</option>
+                                <option value="Corn">Corn</option>
+                                <option value="Grape">Grape</option>
+                                <option value="Cherry">Cherry</option>
+                                <option value="Peach">Peach</option>
+                            </select>
+                            <br><br>
+                            <div class="upload-box" id="uploadBox">
+                                Drag & Drop your image here or click to upload
+                                <input type="file" id="fileInput" style="display: none;" />
+                            </div>
+                        </div>
+                        <button id="uploadButton" onclick="uploadImage()">Upload Image</button>
+                        <div id="result"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="index.js"></script>
+    <script src="https://cdn.lordicon.com/lordicon.js"></script>
+</body>
+</html>
