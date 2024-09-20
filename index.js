@@ -1,3 +1,4 @@
+
 const uploadBox = document.getElementById('uploadBox');
 const fileInput = document.getElementById('fileInput');
 const plantTypeSelect = document.getElementById('plantType');  // New: Reference to the dropdown
