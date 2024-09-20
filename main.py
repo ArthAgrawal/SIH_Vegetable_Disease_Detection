@@ -16,7 +16,7 @@ origins = [
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origins=["*"],  # Adjust this to the domain of your frontend if needed
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -24,24 +24,24 @@ app.add_middleware(
 
 # Define model paths and class names for each plant type
 MODELS = {
-    "Potato": "/Users/admin/Desktop/AI:ML/Potato_Disease_CNN/potato_model_v1.h5 copy",
-    "Mango": "/Users/admin/Desktop/AI:ML/Potato_Disease_CNN/mango_model_v1.h5",
-    "Rice": "/Users/admin/Desktop/AI:ML/Potato_Disease_CNN/rice_model_v1.h5",
-    "Tea": "/Users/admin/Desktop/AI:ML/Potato_Disease_CNN/tea_model_v1.h5",
-    "Cauliflower": '/Users/admin/Desktop/AI:ML/Potato_Disease_CNN/cauliflower__model_v1.h5',
-    "Wheat": '/Users/admin/Desktop/AI:ML/Potato_Disease_CNN/wheat_model_v1.h5',
-    "Brinjal": '/Users/admin/Desktop/AI:ML/Potato_Disease_CNN/brinjal_model_v1.h5',
-    "PepperBell": '/Users/admin/Desktop/AI:ML/Potato_Disease_CNN/pepperbell_model_v1.h5',
-    "Tomato": '/Users/admin/Desktop/AI:ML/Potato_Disease_CNN/tomato_model_v1.h5',
-    "Apple": '/Users/admin/Desktop/AI:ML/Potato_Disease_CNN/apple_model_v1.h5',
-    "Corn": '/Users/admin/Desktop/AI:ML/Potato_Disease_CNN/corn_model_v1.h5',
-    "Grape": '/Users/admin/Desktop/AI:ML/Potato_Disease_CNN/grape_model_v1.h5',
-    "Cherry": '/Users/admin/Desktop/AI:ML/Potato_Disease_CNN/cherry_model_v1.h5',
-    "Peach": '/Users/admin/Desktop/AI:ML/Potato_Disease_CNN/peach_model_v1.h5'
+    "Potato": "/Users/admin/Desktop/AI/Potato_Disease_CNN/potato_model_v1.h5 copy",
+    "Mango": "/Users/admin/Desktop/AI/Potato_Disease_CNN/mango_model_v1.h5",
+    "Rice": "/Users/admin/Desktop/AI/Potato_Disease_CNN/rice_model_v1.h5",
+    "Tea": "/Users/admin/Desktop/AI/Potato_Disease_CNN/tea_model_v1.h5",
+    "Cauliflower": '/Users/admin/Desktop/AI/Potato_Disease_CNN/cauliflower__model_v1.h5',
+    "Wheat": '/Users/admin/Desktop/AI/Potato_Disease_CNN/wheat_model_v1.h5',
+    "Brinjal": '/Users/admin/Desktop/AI/Potato_Disease_CNN/brinjal_model_v1.h5',
+    "PepperBell": '/Users/admin/Desktop/AI/Potato_Disease_CNN/pepperbell_model_v1.h5',
+    "Tomato": '/Users/admin/Desktop/AI/Potato_Disease_CNN/tomato_model_v1.h5',
+    "Apple": '/Users/admin/Desktop/AI/Potato_Disease_CNN/apple_model_v1.h5',
+    "Corn": '/Users/admin/Desktop/AI/Potato_Disease_CNN/corn_model_v1.h5',
+    "Grape": '/Users/admin/Desktop/AI/Potato_Disease_CNN/grape_model_v1.h5',
+    "Cherry": '/Users/admin/Desktop/AI/Potato_Disease_CNN/cherry_model_v1.h5',
+    "Peach": '/Users/admin/Desktop/AI/Potato_Disease_CNN/peach_model_v1.h5'
     
 }
 
-CLASS_NAMES = {
+class_names = {
     "Potato": ["Early Blight", "Late Blight", "Healthy"],
     "Mango": ['Anthracnose', 'Bacterial Canker', 'Cutting Weevil', 'Die Back', 'Gall Midge', 'Healthy', 'ODD(Cifar10_Subset)', 'Powdery Mildew', 'Sooty Mould'],
     "Rice": ['ODD(Cifar10_Subset)', 'bacterial_leaf_blight', 'brown_spot', 'healthy', 'leaf_blast', 'leaf_scald', 'narrow_brown_spot'],
@@ -77,26 +77,40 @@ def format_prediction(predicted_class, confidence):
         'confidence': confidence_message
     }
 
+import logging
+
+logging.basicConfig(level=logging.INFO)
+
 @app.post("/predict")
 async def predict(file: UploadFile = File(...), plant_type: str = Form(...)):
-    if plant_type not in MODELS:
-        return {"error": "Invalid plant type selected."}
+    try:
+        if plant_type not in MODELS:
+            return {"error": "Invalid plant type selected."}
 
-    # Load the correct model and class names based on plant type
-    model_path = MODELS[plant_type]
-    class_names = CLASS_NAMES[plant_type]
+        # Load the correct model and class names based on plant type
+        model_path = MODELS[plant_type]
+        logging.info(f"Loading model for {plant_type} from {model_path}")
+        model = tf.keras.models.load_model(model_path)  # Load the selected plant model
+        
+        image = read_file_as_image(await file.read())
+        img_batch = np.expand_dims(image, 0)
+        
+        logging.info("Image loaded and preprocessed")
 
-    model = tf.keras.models.load_model(model_path)  # Load the selected plant model
-    
-    image = read_file_as_image(await file.read())
-    img_batch = np.expand_dims(image, 0)
-    
-    predictions = model.predict(img_batch)
-    predicted_class = class_names[np.argmax(predictions[0])]
-    confidence = round(np.max(predictions[0]) * 100, 2)
+        predictions = model.predict(img_batch)
+        predicted_class = class_names[plant_type][np.argmax(predictions[0])]  # Use class_names with plant_type
+        confidence = round(np.max(predictions[0]) * 100, 2)
 
-    result = format_prediction(predicted_class, confidence)
-    return result
+        logging.info(f"Prediction made: {predicted_class} with confidence {confidence}%")
+
+        result = format_prediction(predicted_class, confidence)
+        return result
+
+    except Exception as e:
+        logging.error(f"Error during prediction: {str(e)}")
+        return {"error": str(e)}
+
+
 
 if __name__ == "__main__":
     uvicorn.run(app, host='localhost', port=8000)
