@@ -1,7 +1,6 @@
-
 const uploadBox = document.getElementById('uploadBox');
 const fileInput = document.getElementById('fileInput');
-const plantTypeSelect = document.getElementById('plantType');  // New: Reference to the dropdown
+const plantTypeSelect = document.getElementById('plantType');
 
 uploadBox.addEventListener('click', () => fileInput.click());
 
@@ -20,12 +19,18 @@ uploadBox.addEventListener('drop', (e) => {
     const files = e.dataTransfer.files;
     if (files.length > 0) {
         fileInput.files = files;
+        // Optional: Display the uploaded image
+        const reader = new FileReader();
+        reader.onload = (event) => {
+            uploadBox.innerHTML = `<img src="${event.target.result}" style="max-width: 200px;">`;
+        };
+        reader.readAsDataURL(files[0]);
     }
 });
 
 async function uploadImage() {
     const file = fileInput.files[0];
-    const plantType = plantTypeSelect.value;  // Get selected plant type
+    const plantType = plantTypeSelect.value;
 
     if (!file) {
         alert('Please select a file.');
@@ -34,7 +39,7 @@ async function uploadImage() {
 
     const formData = new FormData();
     formData.append('file', file);
-    formData.append('plant_type', plantType);  // Include plant type in form data
+    formData.append('plant_type', plantType);
 
     try {
         const response = await fetch('http://localhost:8000/predict', {
@@ -48,6 +53,15 @@ async function uploadImage() {
 
         const result = await response.json();
         document.getElementById('result').innerText = `Class: ${result.class}, Confidence: ${result.confidence}`;
+        
+        // Display the remedy properly
+        const remedy = result.remedy;
+        if (remedy) {
+            document.getElementById('remedy').innerText = `Remedy: ${remedy.remedies.join(', ')}; Home Remedies: ${remedy.home_remedies.join(', ')}`;
+        } else {
+            document.getElementById('remedy').innerText = 'No remedy found for this disease.';
+        }
+
     } catch (error) {
         console.error('There was a problem with the fetch operation:', error);
         alert('There was a problem with the upload. Check the console for more details.');
