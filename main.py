@@ -5,18 +5,19 @@ import numpy as np
 from io import BytesIO
 from PIL import Image
 import tensorflow as tf
+import json
+import logging
 
 app = FastAPI()
 
 origins = [
     "http://localhost",
     "http://127.0.0.1:5500",
-    "/Users/admin/Desktop/AI:ML/Potato_Disease_CNN/Potato-Disease-Classifier/Potato_Disease_CNN/index.html",
 ]
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Adjust this to the domain of your frontend if needed
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -24,11 +25,11 @@ app.add_middleware(
 
 # Define model paths and class names for each plant type
 MODELS = {
-    "Potato": "/Users/admin/Desktop/AI/Potato_Disease_CNN/potato_model_v1.h5 copy",
+    "Potato": "/Users/admin/Desktop/AI/Potato_Disease_CNN/potato_model_v1.h5",
     "Mango": "/Users/admin/Desktop/AI/Potato_Disease_CNN/mango_model_v1.h5",
     "Rice": "/Users/admin/Desktop/AI/Potato_Disease_CNN/rice_model_v1.h5",
     "Tea": "/Users/admin/Desktop/AI/Potato_Disease_CNN/tea_model_v1.h5",
-    "Cauliflower": '/Users/admin/Desktop/AI/Potato_Disease_CNN/cauliflower__model_v1.h5',
+    "Cauliflower": '/Users/admin/Desktop/AI/Potato_Disease_CNN/cauliflower_model_v1.h5',
     "Wheat": '/Users/admin/Desktop/AI/Potato_Disease_CNN/wheat_model_v1.h5',
     "Brinjal": '/Users/admin/Desktop/AI/Potato_Disease_CNN/brinjal_model_v1.h5',
     "PepperBell": '/Users/admin/Desktop/AI/Potato_Disease_CNN/pepperbell_model_v1.h5',
@@ -38,7 +39,6 @@ MODELS = {
     "Grape": '/Users/admin/Desktop/AI/Potato_Disease_CNN/grape_model_v1.h5',
     "Cherry": '/Users/admin/Desktop/AI/Potato_Disease_CNN/cherry_model_v1.h5',
     "Peach": '/Users/admin/Desktop/AI/Potato_Disease_CNN/peach_model_v1.h5'
-    
 }
 
 class_names = {
@@ -57,6 +57,10 @@ class_names = {
     "Cherry": ['Cherry_(including_sour)___Powdery_mildew', 'Cherry_(including_sour)___healthy', 'ODD(Cifar10_Subset)'],
     "Peach": ['ODD(Cifar10_Subset)', 'Peach___Bacterial_spot', 'Peach___healthy']
 }
+
+# Load remedies from JSON file
+with open('remedies.json') as f:
+    remedies = json.load(f)
 
 @app.get("/ping")
 async def ping():
@@ -77,8 +81,6 @@ def format_prediction(predicted_class, confidence):
         'confidence': confidence_message
     }
 
-import logging
-
 logging.basicConfig(level=logging.INFO)
 
 @app.post("/predict")
@@ -87,30 +89,45 @@ async def predict(file: UploadFile = File(...), plant_type: str = Form(...)):
         if plant_type not in MODELS:
             return {"error": "Invalid plant type selected."}
 
-        # Load the correct model and class names based on plant type
         model_path = MODELS[plant_type]
         logging.info(f"Loading model for {plant_type} from {model_path}")
-        model = tf.keras.models.load_model(model_path)  # Load the selected plant model
-        
+        model = tf.keras.models.load_model(model_path)
+
         image = read_file_as_image(await file.read())
         img_batch = np.expand_dims(image, 0)
-        
+
         logging.info("Image loaded and preprocessed")
 
         predictions = model.predict(img_batch)
-        predicted_class = class_names[plant_type][np.argmax(predictions[0])]  # Use class_names with plant_type
+        predicted_class = class_names[plant_type][np.argmax(predictions[0])]
         confidence = round(np.max(predictions[0]) * 100, 2)
 
         logging.info(f"Prediction made: {predicted_class} with confidence {confidence}%")
 
         result = format_prediction(predicted_class, confidence)
+
+        # Get remedy for predicted class
+        remedy_data = remedies.get(predicted_class)
+
+        if remedy_data:
+            result['remedy'] = {
+                "crop_name": remedy_data['crop_name'],
+                "crop_disease": remedy_data['crop_disease'],
+                "remedies": remedy_data['remedies'],
+                "home_remedies": remedy_data['home_remedies']
+            }
+        else:
+            result['remedy'] = {
+                "crop_name": "Unknown",
+                "crop_disease": predicted_class,
+                "remedies": ["No remedy found for this disease."],
+                "home_remedies": []
+            }
         return result
 
     except Exception as e:
         logging.error(f"Error during prediction: {str(e)}")
         return {"error": str(e)}
-
-
 
 if __name__ == "__main__":
     uvicorn.run(app, host='localhost', port=8000)
