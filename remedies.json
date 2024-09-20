@@ -1,0 +1,109 @@
+{
+    "Early Blight": {
+        "crop_name": "Potato",
+        "crop_disease": "Early Blight",
+        "remedies": [
+            "Use fungicides and practice crop rotation.",
+            "Apply organic fungicides.",
+            "Monitor for early signs and act promptly."
+        ],
+        "home_remedies": [
+            "Mix baking soda with water and spray on affected areas.",
+            "Use a mixture of garlic and water as a spray."
+        ]
+    },
+    "Late Blight": {
+        "crop_name": "Potato",
+        "crop_disease": "Late Blight",
+        "remedies": [
+            "Remove infected plants and apply fungicides.",
+            "Increase airflow around plants.",
+            "Practice crop rotation."
+        ],
+        "home_remedies": [
+            "Spray a solution of milk and water.",
+            "Use a mixture of hydrogen peroxide and water."
+        ]
+    },
+    "Healthy": {
+        "crop_name": "Potato",
+        "crop_disease": "Healthy",
+        "remedies": [
+            "Maintain good cultural practices.",
+            "Ensure adequate watering and sunlight."
+        ],
+        "home_remedies": []
+    },
+    "Anthracnose": {
+        "crop_name": "Mango",
+        "crop_disease": "Anthracnose",
+        "remedies": [
+            "Apply fungicides and ensure proper spacing.",
+            "Prune affected areas to improve airflow."
+        ],
+        "home_remedies": [
+            "Mix neem oil with water and spray.",
+            "Use a mixture of vinegar and water as a spray."
+        ]
+    },
+    "Bacterial Canker": {
+        "crop_name": "Mango",
+        "crop_disease": "Bacterial Canker",
+        "remedies": [
+            "Prune affected areas and use resistant varieties.",
+            "Maintain proper sanitation."
+        ],
+        "home_remedies": [
+            "Use a garlic spray to deter bacteria."
+        ]
+    },
+    "Cutting Weevil": {
+        "crop_name": "Rice",
+        "crop_disease": "Cutting Weevil",
+        "remedies": [
+            "Use insecticides and crop rotation.",
+            "Implement integrated pest management."
+        ],
+        "home_remedies": []
+    },
+    "Die Back": {
+        "crop_name": "Tea",
+        "crop_disease": "Die Back",
+        "remedies": [
+            "Remove affected parts and improve drainage.",
+            "Apply fungicides as needed."
+        ],
+        "home_remedies": [
+            "Use a mixture of baking soda and water."
+        ]
+    },
+    "Gall Midge": {
+        "crop_name": "Rice",
+        "crop_disease": "Gall Midge",
+        "remedies": [
+            "Use insect traps and insecticides.",
+            "Rotate crops to disrupt the lifecycle."
+        ],
+        "home_remedies": []
+    },
+    "Powdery Mildew": {
+        "crop_name": "Mango",
+        "crop_disease": "Powdery Mildew",
+        "remedies": [
+            "Apply fungicides and improve air circulation.",
+            "Remove infected leaves."
+        ],
+        "home_remedies": [
+            "Spray a mixture of milk and water."
+        ]
+    },
+    "Sooty Mould": {
+        "crop_name": "Brinjal",
+        "crop_disease": "Sooty Mould",
+        "remedies": [
+            "Control sap-sucking insects.",
+            "Use insecticides if necessary."
+        ],
+        "home_remedies": []
+    }
+}
