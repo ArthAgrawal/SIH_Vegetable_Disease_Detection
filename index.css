@@ -227,6 +227,22 @@ button:hover {
     animation: floating 2600ms infinite linear;
 }
 
+.result-container {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    margin-top: 20px;
+}
+
+.remedy-box {
+    background-color: #151515;
+    color: #e3f6f5;
+    padding: 10px;
+    border-radius: 5px;
+    width: 200px; /* Adjust width as needed */
+    text-align: left;
+}
+
 #bottom {
     background-color: #ff8866;
     left: 50px;
